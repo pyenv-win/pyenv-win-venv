@@ -76,6 +76,9 @@ function  main {
         ConfigInfo
     }
     elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self"){
+        git -C  $app_dir fetch origin 
+        Write-Host "Changelog:" -ForegroundColor Blue
+        git log ..origin/main --pretty=format:"%C(cyan)* %C(auto)%h: %Cgreen%s%Creset"
         git -C $app_dir pull origin
     }
     elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {

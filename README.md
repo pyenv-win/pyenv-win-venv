@@ -28,7 +28,7 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 # Update
 
-- Run `pyenv-win-venv update self` (Recommended)
+- Run `pyenv-venv update self` (Recommended)
 
 - Run `git pull`:
 
