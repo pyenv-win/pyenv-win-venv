@@ -1,0 +1,139 @@
+# Copyright 2022 Arbaaz Laskar
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#   http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+Param($subcommand1, $subcommand2, $subcommand3)
+$cli_version = 0.1
+$app_dir = "$HOME\.pyenv-win-venv"
+$app_env_dir = "$app_dir\envs"
+
+$pyenv_versions_dir = "$env:PYENV_HOME\versions"
+
+
+function  main {
+    AppDirInit # Initialize the app directories
+
+    if ($subcommand1 -eq "daemon") {
+        #search for .python-version file and activate
+    }
+    elseif ($subcommand1 -eq "activate") {
+        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+            &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
+            
+        }
+        else {
+            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-env install <python_version> $subcommand2"`"
+        }
+    }
+    if ($subcommand1 -eq "activate") {
+        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+            &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
+            
+        }
+        else {
+            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-env install <python_version> $subcommand2"`"
+        }
+    }
+    elseif ($subcommand1 -eq "deactivate") {
+        deactivate
+    }
+    elseif ($subcommand1 -eq "install") {
+        if (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
+            Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
+            pyenv shell $subcommand2
+            python -m venv "$app_env_dir\$subcommand3"
+        }
+        else {
+            Write-Host "Python v$subcommand2 is not installed. Install using `"pyenv install $subcommand2"`"
+        }
+
+    }
+    elseif ($subcommand1 -eq "uninstall") {
+        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+            Write-Host "Uninstalling env: $subcommand2"
+            Remove-Item -Recurse -Force "$app_env_dir\$subcommand2" 
+        }
+        else {
+            Write-Host "$subcommand2 is not installed so it cannot be uninstalled"
+        }
+
+    }
+    elseif ($subcommand1 -eq "list") {
+        if ($subcommand2 -eq "envs") { FetchEnvs }
+        elseif ($subcommand2 -eq "python") { FetchPythonVersions }
+    }
+    elseif ($subcommand1 -eq "config"){
+        ConfigInfo
+    }
+    elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self"){
+        git -C $app_dir pull origin
+    }
+    elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {
+        # Show the help menu if help command used or no commands are used
+        HelpMenu
+    }
+    else { Write-Host "Command is not valid. Run `"pyenv-win-env help`" for the HelpMenu" }
+}
+
+
+function HelpMenu {
+    Write-Host "    pyenv-win-venv v$cli_version
+    Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
+
+    Usage: pyenv-win-venv <command> <args>
+
+    A CLI manage virtual envs with pyenv-win
+
+    Commands:
+    activate            activate an env
+    deactivate          deactivate an env
+    install             install an env
+    uninstall           uninstall an env
+    list envs           list all installed envs
+    list python         list all installed python versions
+    config              show the app directory
+    update self         update the CLI to the latest version
+    help                show this menu
+"
+}
+
+
+# Command functions
+function FetchPythonVersions {
+    Write-Host "Python Versions installed:"
+    pyenv versions
+}
+
+function FetchEnvs {
+    Write-Host "Envs installed:"
+    Get-ChildItem -Directory $app_env_dir
+}
+
+function ConfigInfo {
+    Write-Host "App Directory: $app_dir"
+    Write-Host "App Env Directory:  $app_env_dir"
+}
+
+function AppDirInit {
+    MakeDirRecursive($app_dir)
+    MakeDirRecursive($app_env_dir)
+}
+
+# Helper functions
+function MakeDirRecursive($dir) {
+    if (!(test-path -PathType container $dir)) {
+        [Void](New-Item -ItemType Directory -Path $dir)
+    }
+}
+
+main
