@@ -35,7 +35,7 @@ function  main {
             Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-env install <python_version> $subcommand2"`"
         }
     }
-    if ($subcommand1 -eq "activate") {
+    elseif ($subcommand1 -eq "activate") {
         if (test-path -PathType container "$app_env_dir\$subcommand2") {
             &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
             
@@ -76,9 +76,9 @@ function  main {
         ConfigInfo
     }
     elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self"){
-        git -C  $app_dir fetch origin 
+        [Void](git -C  $app_dir fetch origin)
         Write-Host "Changelog:" -ForegroundColor Blue
-        git log ..origin/main --pretty=format:"%C(cyan)* %C(auto)%h: %Cgreen%s%Creset"
+        git -C $app_dir log ..origin/main --pretty=format:"%C(cyan)* %C(auto)%h: %Cgreen%s%Creset"
         git -C $app_dir pull origin
     }
     elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {
@@ -119,7 +119,7 @@ function FetchPythonVersions {
 
 function FetchEnvs {
     Write-Host "Envs installed:"
-    Get-ChildItem -Directory $app_env_dir
+    (Get-ChildItem -Directory $app_env_dir | Select-Object -Expand Name)
 }
 
 function ConfigInfo {

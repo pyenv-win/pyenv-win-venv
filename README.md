@@ -1,6 +1,6 @@
 <h1 align="center">pyenv-win-venv</h1>
 
-A CLI manage virtual envs with pyenv-win<br><br>
+A CLI manage virtual envs with pyenv-win<br>
 
 To report issues for the CLI, open an issue at https://github.com/arzkar/pyenv-win-venv/issues
 
@@ -28,9 +28,9 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 # Update
 
-- Run `pyenv-venv update self` (Recommended)
+- Automatically `pyenv-venv update self` (Recommended)
 
-- Run `git pull`:
+- Manually using `git pull`:
 
   Go to `%USERPROFILE%\.pyenv\pyenv-win-env` (which is your installed path) and run `git pull`
 
@@ -63,65 +63,49 @@ Adding the following paths to your USER PATH variable in order to access the pye
 - To install an env using Python v3.8.5 (should be already installed in the system using `pyenv`)
 
 ```
-
 pyenv-venv install 3.8.5 env_name
-
 ```
 
 - To uninstall an env
 
 ```
-
 pyenv-venv uninstall env_name
-
 ```
 
 - To activate an env
 
 ```
-
 pyenv-venv activate env_name
-
 ```
 
 - To deactivate an env
 
 ```
-
 pyenv-venv deactivate
-
 ```
 
 - To list all installed envs
 
 ```
-
 pyenv-venv list envs
-
 ```
 
 - To ist all installed python versions
 
 ```
-
 pyenv-venv list python
-
 ```
 
 - To show the app directory
 
 ```
-
 pyenv-venv config
-
 ```
 
 - To update the CLI to the latest version (requires `git`)
 
 ```
-
 pyenv-venv update self
-
 ```
 
 ---
