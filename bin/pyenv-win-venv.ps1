@@ -13,9 +13,9 @@
 # limitations under the License.
 
 Param($subcommand1, $subcommand2, $subcommand3)
-$cli_version = 0.1
 $app_dir = "$HOME\.pyenv-win-venv"
 $app_env_dir = "$app_dir\envs"
+$cli_version = Get-Content "$app_dir\.version"
 
 $pyenv_versions_dir = "$env:PYENV_HOME\versions"
 
@@ -39,7 +39,7 @@ function  main {
             
         }
         else {
-            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-env install <python_version> $subcommand2"`"
+            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
         }
     }
     elseif ($subcommand1 -eq "activate") {
@@ -48,7 +48,7 @@ function  main {
             
         }
         else {
-            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-env install <python_version> $subcommand2"`"
+            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
         }
     }
     elseif ($subcommand1 -eq "deactivate") {
@@ -92,7 +92,7 @@ function  main {
         # Show the help menu if help command used or no commands are used
         HelpMenu
     }
-    else { Write-Host "Command is not valid. Run `"pyenv-win-env help`" for the HelpMenu" }
+    else { Write-Host "Command is not valid. Run `"pyenv-win-venv help`" for the HelpMenu" }
 }
 
 

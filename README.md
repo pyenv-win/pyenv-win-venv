@@ -10,13 +10,21 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/pyenv-w
 
 This script depends on the [pyenv-win](https://github.com/pyenv-win/pyenv-win) so it needs to be installed system to run this script.
 
+## Power Shell
+
+```
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1"; &"$HOME\install-pyenv-win-venv.ps1"
+```
+
+**Note:** Skip the [add System Settings](#add-system-settings) Section
+
 ## Git
 
 ```
 git clone https://github.com/arzkar/pyenv-win-venv "$HOME\.pyenv-win-venv"
 ```
 
-**Note:** Steps to [add System Settings](#add-system-settings)
+You need to add the `\bin` path to your environment variables using the following steps.
 
 ### Add System Settings
 
@@ -32,13 +40,13 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 - Manually using `git pull`:
 
-  Go to `%USERPROFILE%\.pyenv\pyenv-win-env` (which is your installed path) and run `git pull`
+  Go to `%USERPROFILE%\.pyenv\pyenv-win-venv` (which is your installed path) and run `git pull`
 
 # Usage
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.1
+    pyenv-win-venv v0.2
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>
