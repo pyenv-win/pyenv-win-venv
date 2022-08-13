@@ -48,6 +48,21 @@ Adding the following paths to your USER PATH variable in order to access the pye
   - Using `install-pyenv-win-venv.ps1` script:
     Follow these steps: [Power Shell](#power-shell)
 
+# Uninstallation
+
+## CLI
+
+```
+pyenv-venv uninstall self
+```
+
+## Power Shell
+
+```
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+&"$HOME\install-pyenv-win-venv.ps1" -Uninstall
+```
+
 # Usage
 
 ```
@@ -66,6 +81,7 @@ Adding the following paths to your USER PATH variable in order to access the pye
     deactivate          deactivate an env
     install             install an env
     uninstall           uninstall an env
+    uninstall self      uninstall the CLI and its envs
     list envs           list all installed envs
     list python         list all installed python versions
     config              show the app directory

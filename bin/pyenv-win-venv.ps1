@@ -56,9 +56,14 @@ function  main {
     }
     elseif ($subcommand1 -eq "install") {
         if (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
-            Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
-            pyenv shell $subcommand2
-            python -m venv "$app_env_dir\$subcommand3"
+            if ($subcommand3 -ne "self") {
+                Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
+                pyenv shell $subcommand2
+                python -m venv "$app_env_dir\$subcommand3"
+            }
+            else {
+                Write-Host "Cannot create an env called `"self`" since while uninstalling pyenv-venv uninstall self is already a pre-existing command!"
+            }
         }
         else {
             Write-Host "Python v$subcommand2 is not installed. Install using `"pyenv install $subcommand2"`"
@@ -66,7 +71,17 @@ function  main {
 
     }
     elseif ($subcommand1 -eq "uninstall") {
-        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+        if ($subcommand2 -eq "self") {
+            $title = 'Uninstall pyenv-venv and all the installed envs!'
+            $question = 'Are you sure you want to proceed?'
+            $choices  = '&Yes', '&No'
+
+            $decision = $Host.UI.PromptForChoice($title, $question, $choices, 1)
+            if ($decision -eq 0) {
+                Remove-PyEnvWinVenv
+            }
+        }
+        elseif (test-path -PathType container "$app_env_dir\$subcommand2") {
             Write-Host "Uninstalling env: $subcommand2"
             Remove-Item -Recurse -Force "$app_env_dir\$subcommand2" 
         }
@@ -111,6 +126,7 @@ function HelpMenu {
     deactivate          deactivate an env
     install             install an env
     uninstall           uninstall an env
+    uninstall self      uninstall the CLI and its envs
     list envs           list all installed envs
     list python         list all installed python versions
     config              show the app directory
@@ -141,11 +157,36 @@ function AppDirInit {
     MakeDirRecursive($app_env_dir)
 }
 
+Function Remove-PyEnvWinVenv() {
+    Write-Host "Removing $app_dir"
+    If (Test-Path $app_dir) {
+        Remove-Item -Path $app_dir -Recurse -Force
+    }
+    Write-Host "Removing environment variables"
+    Remove-PyEnvVenvVars
+    Remove-PyEnvVenvProfile
+}
+
 # Helper functions
 function MakeDirRecursive($dir) {
     if (!(test-path -PathType container $dir)) {
         [Void](New-Item -ItemType Directory -Path $dir)
     }
 }
+
+Function Remove-PyEnvVenvVars() {
+    $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
+    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }
+    $NewPath = $NewPathParts -Join ";"
+    [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
+}
+
+Function Remove-PyEnvVenvProfile() {
+    $CurrentProfile = Get-Content $Profile
+    $UpdatedProfile = $CurrentProfile.Replace("pyenv-venv init", "")
+    Set-Content -Path  $Profile -Value $UpdatedProfile
+}
+
+
 
 main

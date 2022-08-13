@@ -36,13 +36,20 @@ Function Remove-PyEnvVenvVars() {
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 }
 
+Function Remove-PyEnvVenvProfile() {
+    $CurrentProfile = Get-Content $Profile
+    $UpdatedProfile = $CurrentProfile.Replace("pyenv-venv init", "")
+    Set-Content -Path  $Profile -Value $UpdatedProfile
+}
+
 Function Remove-PyEnvWinVenv() {
-    Write-Host "Removing $PyEnvWinVenvDir..."
+    Write-Host "Removing $PyEnvWinVenvDir"
     If (Test-Path $PyEnvWinVenvDir) {
         Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
     }
-    Write-Host "Removing environment variables..."
+    Write-Host "Removing environment variables"
     Remove-PyEnvVenvVars
+    Remove-PyEnvVenvProfile
 }
 
 Function Get-CurrentVersion() {
@@ -90,7 +97,7 @@ Function Main() {
             exit
         }
         Else {
-            Write-Host "New version available: $LatestVersion. Updating..."
+            Write-Host "New version available: $LatestVersion. Updating"
             
             Write-Host "Backing up existing envs to $BackupDir"
             $FoldersToBackup = "envs"
@@ -116,9 +123,11 @@ Function Main() {
     Remove-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main" -Recurse -Force
     Remove-Item -Path $DownloadPath -Force
 
+    # Add the \bin path to the User's Environment Variables
+    [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
 
     If (Test-Path $BackupDir) {
-        Write-Host "Restoring Python installations..."
+        Write-Host "Restoring Python installations"
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinVenvDir
     }
     
