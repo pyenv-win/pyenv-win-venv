@@ -74,7 +74,7 @@ function  main {
         if ($subcommand2 -eq "self") {
             $title = 'Uninstall pyenv-venv and all the installed envs!'
             $question = 'Are you sure you want to proceed?'
-            $choices  = '&Yes', '&No'
+            $choices = '&Yes', '&No'
 
             $decision = $Host.UI.PromptForChoice($title, $question, $choices, 1)
             if ($decision -eq 0) {
@@ -98,10 +98,20 @@ function  main {
         ConfigInfo
     }
     elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self") {
-        [Void](git -C  $app_dir fetch origin)
-        Write-Host "Changelog:" -ForegroundColor Blue
-        git -C $app_dir log ..origin/main --pretty=format:"%Cblue* %C(auto)%h: %Cgreen%s%n%b"
-        git -C $app_dir pull origin
+        # check if the CLI was installed using Git
+        (git -C $app_dir rev-parse) | out-null
+        if ($LastExitCode -eq 0) {
+            (git -C  $app_dir fetch origin) | out-null
+            Write-Host "Changelog:" -ForegroundColor Blue
+            git -C $app_dir log ..origin/main --pretty=format:"%Cblue* %C(auto)%h: %Cgreen%s%n%b"
+            git -C $app_dir pull origin
+        }
+        else {
+            # Download and run the installation script
+            Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+            &"$HOME\install-pyenv-win-venv.ps1"
+        }
+
     }
     elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {
         # Show the help menu if help command used or no commands are used
@@ -170,7 +180,7 @@ Function Remove-PyEnvWinVenv() {
 # Helper functions
 function MakeDirRecursive($dir) {
     if (!(test-path -PathType container $dir)) {
-        [Void](New-Item -ItemType Directory -Path $dir)
+        (New-Item -ItemType Directory -Path $dir) | out-null
     }
 }
 

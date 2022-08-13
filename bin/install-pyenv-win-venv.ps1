@@ -103,7 +103,7 @@ Function Main() {
             $FoldersToBackup = "envs"
             ForEach ($Dir in $FoldersToBackup) {
                 If (-not (Test-Path $BackupDir)) {
-                    [Void](New-Item -ItemType Directory -Path $BackupDir)
+                    (New-Item -ItemType Directory -Path $BackupDir) | out-null
                 }
                 Move-Item -Path "${PyEnvWinVenvDir}/${Dir}" -Destination $BackupDir
             }
@@ -113,7 +113,7 @@ Function Main() {
         }   
     }
 
-    [Void](New-Item -Path $PyEnvWinVenvDir -ItemType Directory)
+    (New-Item -Path $PyEnvWinVenvDir -ItemType Directory) | out-null
 
     $DownloadPath = "$PyEnvWinVenvDir\pyenv-win-venv.zip"
 

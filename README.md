@@ -37,16 +37,20 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 # Update
 
-- Automatically using `pyenv-venv update self` (Recommended)
+Automatically using `pyenv-venv update self` (Recommended)
 
-- Manually:
+## Git (If the CLI was installed using Git)
 
-  - Using `git pull`:
+Using `git pull`:
 
-  Go to `%USERPROFILE%\.pyenv\pyenv-win-venv` (which is your installed path) and run `git pull`
+Go to `%USERPROFILE%\.pyenv\pyenv-win-venv` (which is your installed path) and run `git pull`
 
-  - Using `install-pyenv-win-venv.ps1` script:
-    Follow these steps: [Power Shell](#power-shell)
+## Power Shell (If the CLI was installed using the PowerScript Installation Script)
+
+```
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+&"$HOME\install-pyenv-win-venv.ps1"
+```
 
 # Uninstallation
 
@@ -67,7 +71,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzka
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.2
+    pyenv-win-venv v0.3
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>
