@@ -28,7 +28,7 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 # Update
 
-- Automatically `pyenv-venv update self` (Recommended)
+- Automatically using `pyenv-venv update self` (Recommended)
 
 - Manually using `git pull`:
 
@@ -47,6 +47,8 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
     Commands:
     activate            activate an env
+    init                search for .python-version file in the
+                        current directory and activate the env
     deactivate          deactivate an env
     install             install an env
     uninstall           uninstall an env
@@ -107,5 +109,44 @@ pyenv-venv config
 ```
 pyenv-venv update self
 ```
+
+# Note
+
+## Env automatic activation using `.python-version` file
+
+- You can set the env for a directory using a `.python-version`
+  file and the cli can automatically activate the env if a shell is
+  opened in that directory
+
+- `.python-verion` file: It should only contain the name of the env
+
+- You can manually do this by calling `pyenv-venv init`
+
+- To enable the automatic feature, you need to add `pyenv-venv init` to your the PowerShell Profile.
+  Steps to do this:
+
+  - First check if you already have a powershell profile.
+
+    ```
+    Test-Path $profile
+    ```
+
+    If its `False`, then you need to create a new profile.
+
+  - Create a new profile using:
+
+    ```
+    New-Item -path $profile -type file –force
+    ```
+
+    The location to the profile will be shown on the shell.
+
+  - Open the `profile.ps1` file and append the following line.
+
+    ```
+    pyenv-venv init
+    ```
+
+    Save and restart the shell.
 
 ---

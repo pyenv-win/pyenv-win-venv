@@ -23,8 +23,15 @@ $pyenv_versions_dir = "$env:PYENV_HOME\versions"
 function  main {
     AppDirInit # Initialize the app directories
 
-    if ($subcommand1 -eq "daemon") {
-        #search for .python-version file and activate
+    if ($subcommand1 -eq "init") {
+        #search for .python-version file in the current directory and activate the env
+        $python_version_file = "$((Get-Location).Path)\.python-version"
+        if (test-path $python_version_file) {
+            $env_name = (Get-Content $python_version_file)
+            if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
+                &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+            }
+        }
     }
     elseif ($subcommand1 -eq "activate") {
         if (test-path -PathType container "$app_env_dir\$subcommand2") {
@@ -72,13 +79,13 @@ function  main {
         if ($subcommand2 -eq "envs") { FetchEnvs }
         elseif ($subcommand2 -eq "python") { FetchPythonVersions }
     }
-    elseif ($subcommand1 -eq "config"){
+    elseif ($subcommand1 -eq "config") {
         ConfigInfo
     }
-    elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self"){
+    elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self") {
         [Void](git -C  $app_dir fetch origin)
         Write-Host "Changelog:" -ForegroundColor Blue
-        git -C $app_dir log ..origin/main --pretty=format:"%C(cyan)* %C(auto)%h: %Cgreen%s%Creset"
+        git -C $app_dir log ..origin/main --pretty=format:"%Cblue* %C(auto)%h: %Cgreen%s%n%b"
         git -C $app_dir pull origin
     }
     elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {
@@ -98,6 +105,8 @@ function HelpMenu {
     A CLI manage virtual envs with pyenv-win
 
     Commands:
+    init                search for .python-version file in the
+                        current directory and activate the env
     activate            activate an env
     deactivate          deactivate an env
     install             install an env
