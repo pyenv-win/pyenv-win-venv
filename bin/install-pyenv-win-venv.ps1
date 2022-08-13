@@ -34,13 +34,12 @@ Function Remove-PyEnvVenvVars() {
     $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
-
 }
 
 Function Remove-PyEnvWinVenv() {
     Write-Host "Removing $PyEnvWinVenvDir..."
     If (Test-Path $PyEnvWinVenvDir) {
-        Remove-Item -Path $PyEnvWinVenvDir -Recurse
+        Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
     }
     Write-Host "Removing environment variables..."
     Remove-PyEnvVenvVars
@@ -60,10 +59,10 @@ Function Get-CurrentVersion() {
 
 Function Get-LatestVersion() {
     $LatestVersionFilePath = "$PyEnvWinVenvDir\latest.version"
-    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/arzkar/pyenv-win/main/.version", $LatestVersionFilePath)
+    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/.version", $LatestVersionFilePath)
     $LatestVersion = Get-Content $LatestVersionFilePath
 
-    Remove-Item -Path $LatestVersionFilePath
+    Remove-Item -Path $LatestVersionFilePath -Force
 
     Return $LatestVersion
 }
@@ -93,38 +92,30 @@ Function Main() {
         Else {
             Write-Host "New version available: $LatestVersion. Updating..."
             
-            Write-Host "Backing up existing Python installations..."
+            Write-Host "Backing up existing envs to $BackupDir"
             $FoldersToBackup = "envs"
             ForEach ($Dir in $FoldersToBackup) {
                 If (-not (Test-Path $BackupDir)) {
-                    New-Item -ItemType Directory -Path $BackupDir
+                    [Void](New-Item -ItemType Directory -Path $BackupDir)
                 }
-                Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
+                Move-Item -Path "${PyEnvWinVenvDir}/${Dir}" -Destination $BackupDir
             }
             
-            Write-Host "Removing $PyEnvWinDir..."
-            Remove-Item -Path $PyEnvWinVenvDir -Recurse
+            Write-Host "Removing $PyEnvWinVenvDir"
+            Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
         }   
     }
 
-    New-Item -Path $PyEnvWinVenvDir -ItemType Directory
+    [Void](New-Item -Path $PyEnvWinVenvDir -ItemType Directory)
 
     $DownloadPath = "$PyEnvWinVenvDir\pyenv-win-venv.zip"
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/arzkar/pyenv-win-venv/archive/main.zip", $DownloadPath)
     Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvWinVenvDir
     Move-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main\*" -Destination "$PyEnvWinVenvDir"
-    Remove-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main" -Recurse
-    Remove-Item -Path $DownloadPath
+    Remove-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main" -Recurse -Force
+    Remove-Item -Path $DownloadPath -Force
 
-    # Update env vars
-    $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
-
-    # Remove existing paths, so we don't add duplicates
-    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }
-    $NewPathParts = $BinPath + $NewPathParts
-    $NewPath = $NewPathParts -Join ";"
-    [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
     If (Test-Path $BackupDir) {
         Write-Host "Restoring Python installations..."

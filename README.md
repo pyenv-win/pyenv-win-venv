@@ -13,10 +13,11 @@ This script depends on the [pyenv-win](https://github.com/pyenv-win/pyenv-win) s
 ## Power Shell
 
 ```
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1"; &"$HOME\install-pyenv-win-venv.ps1"
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+&"$HOME\install-pyenv-win-venv.ps1"
 ```
 
-**Note:** Skip the [add System Settings](#add-system-settings) Section
+**Note:** Skip the [Add System Settings](#add-system-settings) Section
 
 ## Git
 
@@ -38,9 +39,14 @@ Adding the following paths to your USER PATH variable in order to access the pye
 
 - Automatically using `pyenv-venv update self` (Recommended)
 
-- Manually using `git pull`:
+- Manually:
+
+  - Using `git pull`:
 
   Go to `%USERPROFILE%\.pyenv\pyenv-win-venv` (which is your installed path) and run `git pull`
+
+  - Using `install-pyenv-win-venv.ps1` script:
+    Follow these steps: [Power Shell](#power-shell)
 
 # Usage
 
