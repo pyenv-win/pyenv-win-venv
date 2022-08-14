@@ -18,14 +18,13 @@ $app_env_dir = "$app_dir\envs"
 $cli_version = Get-Content "$app_dir\.version"
 
 $pyenv_versions_dir = "$env:PYENV_HOME\versions"
-
+$python_version_file = "$((Get-Location).Path)\.python-version"
 
 function  main {
     AppDirInit # Initialize the app directories
 
     if ($subcommand1 -eq "init") {
         #search for .python-version file in the current directory and activate the env
-        $python_version_file = "$((Get-Location).Path)\.python-version"
         if (test-path $python_version_file) {
             $env_name = (Get-Content $python_version_file)
             if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
@@ -97,6 +96,17 @@ function  main {
     elseif ($subcommand1 -eq "config") {
         ConfigInfo
     }
+    elseif ($subcommand1 -eq "local") {
+        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+            Set-Content -Path $python_version_file -Value $subcommand2
+        }
+        else {
+            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
+        }
+    }
+    elseif ($subcommand1 -eq "config") {
+        ConfigInfo
+    }
     elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self") {
         # check if the CLI was installed using Git
         (git -C $app_dir rev-parse) | out-null
@@ -139,6 +149,7 @@ function HelpMenu {
     uninstall self      uninstall the CLI and its envs
     list envs           list all installed envs
     list python         list all installed python versions
+    local               set the given env in .python-version file
     config              show the app directory
     update self         update the CLI to the latest version
     help                show this menu

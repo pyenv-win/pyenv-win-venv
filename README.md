@@ -71,7 +71,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.3
+    pyenv-win-venv v0.4
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>
@@ -88,6 +88,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
     uninstall self      uninstall the CLI and its envs
     list envs           list all installed envs
     list python         list all installed python versions
+    local               set the given env in .python-version file
     config              show the app directory
     help                show this menu
 ```
@@ -132,6 +133,12 @@ pyenv-venv list envs
 pyenv-venv list python
 ```
 
+- To set an env to the `.python-version` file
+
+```
+pyenv-venv local env_name
+```
+
 - To show the app directory
 
 ```
@@ -150,11 +157,11 @@ pyenv-venv update self
 
 - You can set the env for a directory using a `.python-version`
   file and the CLI can automatically activate the env if a shell is
-  opened in that directory
+  opened in that directory.
 
-- `.python-version` file: It should only contain the name of the env
+- `.python-version` file: It should only contain the name of the env and can be created by manually or by using the command: `pyenv-venv local env_name`
 
-- You can manually do this by calling `pyenv-venv init`
+- You can manually activate the env if the directory has a `.python-version` file by calling `pyenv-venv init`
 
 - To enable the automatic feature, you need to add `pyenv-venv init` to your the PowerShell Profile.
   Steps to do this:
