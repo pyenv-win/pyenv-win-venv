@@ -19,7 +19,7 @@
     PS> install-pyenv-win-venv.ps1
 
     .LINK
-    Online version: https://github.com/arzkar/pyenv-win-venv
+    Online version: https://github.com/pyenv-win/pyenv-win-venv
 #>
     
 param (
@@ -66,7 +66,7 @@ Function Get-CurrentVersion() {
 
 Function Get-LatestVersion() {
     $LatestVersionFilePath = "$PyEnvWinVenvDir\latest.version"
-    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/.version", $LatestVersionFilePath)
+    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/.version", $LatestVersionFilePath)
     $LatestVersion = Get-Content $LatestVersionFilePath
 
     Remove-Item -Path $LatestVersionFilePath -Force
@@ -117,7 +117,7 @@ Function Main() {
 
     $DownloadPath = "$PyEnvWinVenvDir\pyenv-win-venv.zip"
 
-    (New-Object System.Net.WebClient).DownloadFile("https://github.com/arzkar/pyenv-win-venv/archive/main.zip", $DownloadPath)
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win-venv/archive/main.zip", $DownloadPath)
     Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvWinVenvDir
     Move-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main\*" -Destination "$PyEnvWinVenvDir"
     Remove-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main" -Recurse -Force
@@ -135,7 +135,7 @@ Function Main() {
         Write-Host "pyenv-win-venv is successfully installed. You may need to close and reopen your terminal before using it."
     }
     Else {
-        Write-Host "pyenv-win-venv was not installed successfully. If this issue persists, please open a ticket: https://github.com/arzkar/pyenv-win-venv/issues"
+        Write-Host "pyenv-win-venv was not installed successfully. If this issue persists, please open a ticket: https://github.com/pyenv-win/pyenv-win-venv/issues"
     }
 }
 

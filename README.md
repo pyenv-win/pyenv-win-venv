@@ -2,7 +2,7 @@
 
 A CLI to manage virtual envs with pyenv-win<br>
 
-To report issues for the CLI, open an issue at https://github.com/arzkar/pyenv-win-venv/issues
+To report issues for the CLI, open an issue at https://github.com/pyenv-win/pyenv-win-venv/issues
 
 # Installation
 
@@ -13,7 +13,7 @@ This script depends on the [pyenv-win](https://github.com/pyenv-win/pyenv-win) s
 ## Power Shell
 
 ```
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
 &"$HOME\install-pyenv-win-venv.ps1"
 ```
 
@@ -22,7 +22,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzka
 ## Git
 
 ```
-git clone https://github.com/arzkar/pyenv-win-venv "$HOME\.pyenv-win-venv"
+git clone https://github.com/pyenv-win/pyenv-win-venv "$HOME\.pyenv-win-venv"
 ```
 
 You need to add the `\bin` path to your environment variables using the following steps.
@@ -48,7 +48,7 @@ Go to `%USERPROFILE%\.pyenv-win-venv` (which is your installed path) and run `gi
 ## Power Shell (If the CLI was installed using the PowerScript Installation Script)
 
 ```
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
 &"$HOME\install-pyenv-win-venv.ps1"
 ```
 
@@ -63,7 +63,7 @@ pyenv-venv uninstall self
 ## Power Shell
 
 ```
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzkar/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
 &"$HOME\install-pyenv-win-venv.ps1" -Uninstall
 ```
 
@@ -96,7 +96,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzka
 
 # Example
 
-- To install an env using Python v3.8.5 (should be already installed in the system using `pyenv`)
+- To install an env using Python v3.8.5 (should be already installed in the system using `pyenv install 3.8.5`)
 
 ```
 pyenv-venv install 3.8.5 env_name
@@ -126,7 +126,7 @@ pyenv-venv deactivate
 pyenv-venv list envs
 ```
 
-- To ist all installed python versions
+- To list all installed python versions
 
 ```
 pyenv-venv list python
@@ -138,7 +138,7 @@ pyenv-venv list python
 pyenv-venv config
 ```
 
-- To update the CLI to the latest version (requires `git`)
+- To update the CLI to the latest version
 
 ```
 pyenv-venv update self
