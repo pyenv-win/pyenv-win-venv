@@ -127,7 +127,7 @@ function HelpMenu {
 
     Usage: pyenv-win-venv <command> <args>
 
-    A CLI manage virtual envs with pyenv-win
+    A CLI to manage virtual envs with pyenv-win
 
     Commands:
     init                search for .python-version file in the

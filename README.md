@@ -1,6 +1,6 @@
 <h1 align="center">pyenv-win-venv</h1>
 
-A CLI manage virtual envs with pyenv-win<br>
+A CLI to manage virtual envs with pyenv-win<br>
 
 To report issues for the CLI, open an issue at https://github.com/arzkar/pyenv-win-venv/issues
 
@@ -43,7 +43,7 @@ Automatically using `pyenv-venv update self` (Recommended)
 
 Using `git pull`:
 
-Go to `%USERPROFILE%\.pyenv\pyenv-win-venv` (which is your installed path) and run `git pull`
+Go to `%USERPROFILE%\.pyenv-win-venv` (which is your installed path) and run `git pull`
 
 ## Power Shell (If the CLI was installed using the PowerScript Installation Script)
 
@@ -76,7 +76,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/arzka
 
     Usage: pyenv-win-venv <command> <args>
 
-    A CLI manage virtual envs with pyenv-win
+    A CLI to manage virtual envs with pyenv-win
 
     Commands:
     activate            activate an env
@@ -149,10 +149,10 @@ pyenv-venv update self
 ## Env automatic activation using `.python-version` file
 
 - You can set the env for a directory using a `.python-version`
-  file and the cli can automatically activate the env if a shell is
+  file and the CLI can automatically activate the env if a shell is
   opened in that directory
 
-- `.python-verion` file: It should only contain the name of the env
+- `.python-version` file: It should only contain the name of the env
 
 - You can manually do this by calling `pyenv-venv init`
 
