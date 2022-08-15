@@ -31,7 +31,6 @@ function  main {
             while ($cwd.length -ne 0) {
                 if (test-path "$cwd\.python-version") {
                     $env_name = (Get-Content "$cwd\.python-version")
-                    write-host $env_name
                     if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
                         &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
                     }
@@ -126,6 +125,7 @@ function  main {
             git -C $app_dir pull origin
         }
         else {
+            $LastExitCode = 0 # reset the exit code after the git command
             # Download and run the installation script
             Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
             &"$HOME\install-pyenv-win-venv.ps1"

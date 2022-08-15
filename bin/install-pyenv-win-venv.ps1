@@ -86,7 +86,7 @@ Function Main() {
         exit
     }
 
-    $BackupDir = "${env:Temp}/pyenv-win-venv-backup"
+    $BackupDir = "${env:Temp}\pyenv-win-venv-backup-$(-join ((65..90) + (97..122) | Get-Random -Count 10 | % {[char]$_}))"
     
     $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
@@ -105,12 +105,17 @@ Function Main() {
                 If (-not (Test-Path $BackupDir)) {
                     (New-Item -ItemType Directory -Path $BackupDir) | out-null
                 }
-                Move-Item -Path "${PyEnvWinVenvDir}/${Dir}" -Destination $BackupDir
+                Move-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force
             }
             
             Write-Host "Removing $PyEnvWinVenvDir"
             Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
         }   
+    }
+    else {
+        # First installation,
+        # Add the \bin path to the User's Environment Variables
+        [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
     }
 
     (New-Item -Path $PyEnvWinVenvDir -ItemType Directory) | out-null
@@ -119,16 +124,13 @@ Function Main() {
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win-venv/archive/main.zip", $DownloadPath)
     Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvWinVenvDir
-    Move-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main\*" -Destination "$PyEnvWinVenvDir"
+    Move-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main\*" -Destination "$PyEnvWinVenvDir" -Force
     Remove-Item -Path "$PyEnvWinVenvDir\pyenv-win-venv-main" -Recurse -Force
     Remove-Item -Path $DownloadPath -Force
 
-    # Add the \bin path to the User's Environment Variables
-    [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
-
     If (Test-Path $BackupDir) {
         Write-Host "Restoring Python installations"
-        Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinVenvDir
+        Move-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force
     }
     
     If ($LastExitCode -eq 0) {
