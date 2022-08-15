@@ -71,7 +71,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.4
+    pyenv-win-venv v0.4.1
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>
@@ -79,9 +79,11 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
     A CLI to manage virtual envs with pyenv-win
 
     Commands:
-    activate            activate an env
     init                search for .python-version file in the
                         current directory and activate the env
+    init root           search for .python-version file by traversing from
+                        the current working directory to the root
+    activate            activate an env
     deactivate          deactivate an env
     install             install an env
     uninstall           uninstall an env
@@ -190,4 +192,4 @@ pyenv-venv update self
 
     Save and restart the shell.
 
----
+**Note:** If you want the CLI to search for a `.python-version` file by traversing from the current working directory to the root till it finds the file, use `pyenv-venv init root`

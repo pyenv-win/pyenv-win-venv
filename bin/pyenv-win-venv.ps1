@@ -24,21 +24,30 @@ function  main {
     AppDirInit # Initialize the app directories
 
     if ($subcommand1 -eq "init") {
-        #search for .python-version file in the current directory and activate the env
-        if (test-path $python_version_file) {
-            $env_name = (Get-Content $python_version_file)
-            if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
-                &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+        # search for .python-version file in the current directory and move up a
+        # directory towards the root till a .python-version file is found then activate the env
+        if ($subcommand2 -eq "root") {
+            $cwd = $((Get-Location).Path)
+            while ($cwd.length -ne 0) {
+                if (test-path "$cwd\.python-version") {
+                    $env_name = (Get-Content "$cwd\.python-version")
+                    write-host $env_name
+                    if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
+                        &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                    }
+                    exit
+                }
+                else { $cwd = Split-Path $cwd }
             }
         }
-    }
-    elseif ($subcommand1 -eq "activate") {
-        if (test-path -PathType container "$app_env_dir\$subcommand2") {
-            &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
-            
-        }
         else {
-            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
+            # search for .python-version file in the current directory and activate the env
+            if (test-path $python_version_file) {
+                $env_name = (Get-Content $python_version_file)
+                if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
+                    &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                }
+            }
         }
     }
     elseif ($subcommand1 -eq "activate") {
@@ -140,8 +149,10 @@ function HelpMenu {
     A CLI to manage virtual envs with pyenv-win
 
     Commands:
-    init                search for .python-version file in the
+    init                search for .python-version file in the 
                         current directory and activate the env
+    init root           search for .python-version file by traversing from
+                        the current working directory to the root
     activate            activate an env
     deactivate          deactivate an env
     install             install an env
