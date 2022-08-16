@@ -71,7 +71,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.4.1
+    pyenv-win-venv v0.4.2
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>

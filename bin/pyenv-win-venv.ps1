@@ -64,9 +64,14 @@ function  main {
     elseif ($subcommand1 -eq "install") {
         if (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
             if ($subcommand3 -ne "self") {
-                Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
-                pyenv shell $subcommand2
-                python -m venv "$app_env_dir\$subcommand3"
+                if (!(test-path -PathType container "$app_env_dir\$subcommand3")) {
+                    Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
+                    pyenv shell $subcommand2
+                    python -m venv "$app_env_dir\$subcommand3"
+                }
+                else {
+                    Write-Host "`"$subcommand3`" already exists. Please choose another name for the env."
+                }
             }
             else {
                 Write-Host "Cannot create an env called `"self`" since while uninstalling pyenv-venv uninstall self is already a pre-existing command!"
