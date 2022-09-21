@@ -105,11 +105,17 @@ Function Main() {
                 If (-not (Test-Path $BackupDir)) {
                     (New-Item -ItemType Directory -Path $BackupDir) | out-null
                 }
-                Move-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force
+                Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force
             }
-            
-            Write-Host "Removing $PyEnvWinVenvDir"
-            Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
+            # Check if the envs were backed up
+            if ($(Test-Path "$BackupDir\*") -eq "False") {
+                Write-Host "Install failed."
+                exit
+            }
+            else {
+                Write-Host "Removing $PyEnvWinVenvDir"
+                Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
+            }
         }   
     }
     else {
@@ -130,7 +136,7 @@ Function Main() {
 
     If (Test-Path $BackupDir) {
         Write-Host "Restoring Python installations"
-        Move-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force
+        Copy-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force
     }
     
     If ($LastExitCode -eq 0) {
