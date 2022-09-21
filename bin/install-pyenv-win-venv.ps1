@@ -105,7 +105,7 @@ Function Main() {
                 If (-not (Test-Path $BackupDir)) {
                     (New-Item -ItemType Directory -Path $BackupDir) | out-null
                 }
-                Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force
+                Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force -Recurse
             }
             Write-Host "Removing $PyEnvWinVenvDir"
             Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
@@ -129,7 +129,7 @@ Function Main() {
 
     If (Test-Path $BackupDir) {
         Write-Host "Restoring Python installations"
-        Copy-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force
+        Copy-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force -Recurse
     }
     
     If ($LastExitCode -eq 0) {
