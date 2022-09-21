@@ -71,7 +71,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 ```
 > pyenv-win-venv
-    pyenv-win-venv v0.5.0
+    pyenv-win-venv v0.5.1
     Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
     Usage: pyenv-win-venv <command> <args>
@@ -151,11 +151,13 @@ pyenv-venv config
 ```
 pyenv-venv update self
 ```
+
 - To show the full path to the executable
 
 ```
 pyenv-venv which <exec_name>
 ```
+
 - To get help for each command
 
 ```

@@ -107,15 +107,8 @@ Function Main() {
                 }
                 Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force
             }
-            # Check if the envs were backed up
-            if ($(Test-Path "$BackupDir\*") -eq "False") {
-                Write-Host "Install failed."
-                exit
-            }
-            else {
-                Write-Host "Removing $PyEnvWinVenvDir"
-                Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
-            }
+            Write-Host "Removing $PyEnvWinVenvDir"
+            Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
         }   
     }
     else {

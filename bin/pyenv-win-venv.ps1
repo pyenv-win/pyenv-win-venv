@@ -154,7 +154,7 @@ function  main {
             Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand2.exe"
         }
         else {
-            Write-Host "Executable not found."
+            pyenv which $subcommand2
         }
     }
     elseif ($subcommand1 -eq "help" -Or !$subcommand1) {
