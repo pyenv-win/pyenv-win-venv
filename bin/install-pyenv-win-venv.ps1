@@ -97,7 +97,7 @@ Function Main() {
             exit
         }
         Else {
-            Write-Host "New version available: $LatestVersion. Updating"
+            Write-Host "New version available: $LatestVersion. Updating..."
             
             Write-Host "Backing up existing envs to $BackupDir"
             $FoldersToBackup = "envs"

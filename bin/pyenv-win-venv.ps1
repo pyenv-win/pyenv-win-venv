@@ -50,7 +50,10 @@ function  main {
         }
     }
     elseif ($subcommand1 -eq "activate") {
-        if (test-path -PathType container "$app_env_dir\$subcommand2") {
+        if (!$subcommand2) {
+            HelpActivate
+        }
+        elseif (test-path -PathType container "$app_env_dir\$subcommand2") {
             &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
             
         }
@@ -62,7 +65,10 @@ function  main {
         deactivate
     }
     elseif ($subcommand1 -eq "install") {
-        if (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
+        if (!$subcommand2 -Or !$subcommand3) {
+            HelpInstall
+        }
+        elseif (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
             if ($subcommand3 -ne "self") {
                 if (!(test-path -PathType container "$app_env_dir\$subcommand3")) {
                     Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
@@ -74,7 +80,7 @@ function  main {
                 }
             }
             else {
-                Write-Host "Cannot create an env called `"self`" since while uninstalling pyenv-venv uninstall self is already a pre-existing command!"
+                Write-Host "Cannot create an env called `"self`" since while uninstalling `pyenv-venv uninstall self` is already a pre-existing command."
             }
         }
         else {
@@ -83,7 +89,8 @@ function  main {
 
     }
     elseif ($subcommand1 -eq "uninstall") {
-        if ($subcommand2 -eq "self") {
+        if (!$subcommand2) { HelpUninstall }
+        elseif ($subcommand2 -eq "self") {
             $title = 'Uninstall pyenv-venv and all the installed envs!'
             $question = 'Are you sure you want to proceed?'
             $choices = '&Yes', '&No'
@@ -103,7 +110,8 @@ function  main {
 
     }
     elseif ($subcommand1 -eq "list") {
-        if ($subcommand2 -eq "envs") { FetchEnvs }
+        if (!$subcommand2) { HelpList }
+        elseif ($subcommand2 -eq "envs") { FetchEnvs }
         elseif ($subcommand2 -eq "python") { FetchPythonVersions }
     }
     elseif ($subcommand1 -eq "config") {
@@ -137,9 +145,41 @@ function  main {
         }
 
     }
-    elseif ($subcommand1 -eq "help" -Or (!$subcommand1 -And !$subcommand2) ) {
-        # Show the help menu if help command used or no commands are used
-        HelpMenu
+    elseif ($subcommand1 -eq "which") {
+        
+        if (!$subcommand2) {
+            HelpWhich
+        }
+        elseif (Test-Path "$env:VIRTUAL_ENV/Scripts/$subcommand2.exe") {
+            Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand2.exe"
+        }
+        else {
+            Write-Host "Executable not found."
+        }
+    }
+    elseif ($subcommand1 -eq "help" -Or !$subcommand1) {
+        if (!$subcommand2) {
+            # Show the help menu if help command used or no commands are used
+            HelpMenu
+        }
+        elseif ($subcommand2 -eq "init") {
+            HelpInit
+        }
+        elseif ($subcommand2 -eq "activate") {
+            HelpActivate
+        }
+        elseif ($subcommand2 -eq "install") {
+            HelpInstall
+        }
+        elseif ($subcommand2 -eq "uninstall") {
+            HelpUninstall
+        }
+        elseif ($subcommand2 -eq "list") {
+            HelpList
+        }
+        elseif ($subcommand2 -eq "which") {
+            HelpWhich
+        }
     }
     else { Write-Host "Command is not valid. Run `"pyenv-win-venv help`" for the HelpMenu" }
 }
@@ -156,19 +196,17 @@ function HelpMenu {
     Commands:
     init                search for .python-version file in the 
                         current directory and activate the env
-    init root           search for .python-version file by traversing from
-                        the current working directory to the root
     activate            activate an env
     deactivate          deactivate an env
     install             install an env
     uninstall           uninstall an env
     uninstall self      uninstall the CLI and its envs
-    list envs           list all installed envs
-    list python         list all installed python versions
+    list <command>      list all installed envs/python versions
     local               set the given env in .python-version file
     config              show the app directory
     update self         update the CLI to the latest version
-    help                show this menu
+    which <command>     show the full path to an executable
+    help <command>      show the CLI/<command> menu
 "
 }
 
@@ -224,6 +262,70 @@ Function Remove-PyEnvVenvProfile() {
     Set-Content -Path  $Profile -Value $UpdatedProfile
 }
 
+# Help functions
+Function HelpInit() {
+    Write-Host "Usage: pyenv-venv init <command>
 
+Search for .python-version file in the 
+current directory and activate the env
+
+Commands:
+root    search for .python-version file by traversing from
+        the current working directory to the root
+    
+Example: `pyenv-venv init root`
+"
+}
+Function HelpActivate() {
+    Write-Host "Usage: pyenv-venv activate <env_name>
+
+Parameters:
+env_name    name of the installed virtualenv
+
+Example: `pyenv-venv activate test_env`
+"
+}
+Function HelpInstall() {
+    Write-Host "Usage: pyenv-venv install <python_ver> <env_name>
+
+Parameters:
+envs        list all installed envs
+python      list all installed python versions
+
+Example: `pyenv-venv install 3.8.5 test_env`
+"
+}
+Function HelpUninstall() {
+    Write-Host "Usage: pyenv-venv uninstall <env_name>
+
+Parameters:
+env_name    name of the env
+self        uninstall the CLI itself
+
+Example: `pyenv-venv uninstall test_env`
+"
+}
+Function HelpList() {
+    Write-Host "Usage: pyenv-venv list <command>
+
+Commands:
+envs        list all installed envs
+python      list all installed python versions
+
+Example: `pyenv-venv list envs`
+"
+}
+
+Function HelpWhich() {
+    Write-Host "Usage: pyenv-venv which <exec_name>
+
+Shows the full path of the executable selected. 
+
+Parameters:
+exec_name   name of the executable
+
+Example: `pyenv-venv which python`
+"
+}
 
 main
