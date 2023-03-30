@@ -64,6 +64,7 @@ function  main {
         }
         elseif (test-path -PathType container "$app_env_dir\$subcommand3") {
             if ($subcommand1 -eq "ps1") {
+                $env:PYENV_VENV_ACTIVE = $subcommand3
                 &"$app_env_dir\$subcommand3\Scripts\Activate.ps1" 
             }
             else {
@@ -76,12 +77,7 @@ function  main {
         }
     }
     elseif ($subcommand2 -eq "deactivate") {
-        if ($subcommand1 -eq "ps1") {
-            deactivate
-        }
-        else {
-            cmd /k "$env:VIRTUAL_ENV\Scripts\deactivate.bat"
-        }
+        DeactivatePyEnv
     }
     elseif ($subcommand2 -eq "install") {
         if (!$subcommand3 -Or !$subcommand4) {
@@ -91,8 +87,11 @@ function  main {
             if ($subcommand4 -ne "self") {
                 if (!(test-path -PathType container "$app_env_dir\$subcommand4")) {
                     Write-Host "Installing env: $subcommand4 using Python v$subcommand3"
+                    $PYENV_VENV_ACTIVE = $env:PYENV_VENV_ACTIVE # Copy the active python venv
+                    DeactivatePyEnv # Deactivate the active python env
                     pyenv shell $subcommand3
                     python -m venv "$app_env_dir\$subcommand4"
+                    pyenv-venv activate $PYENV_VENV_ACTIVE # Reactivate the python env
                 }
                 else {
                     Write-Host "`"$subcommand4`" already exists. Please choose another name for the env."
@@ -169,8 +168,8 @@ function  main {
         if (!$subcommand3) {
             HelpWhich
         }
-        elseif (Test-Path "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe") {
-            Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe"
+        elseif (Test-Path "$env:VIRTUAL_ENV\Scripts\$subcommand3.exe") {
+            Write-Host "$env:VIRTUAL_ENV\Scripts\$subcommand3.exe"
         }
         else {
             pyenv which $subcommand3
@@ -205,7 +204,7 @@ function  main {
 
 
 function HelpMenu {
-    Write-Host "pyenv-win-venv v$cli_version
+    Write-Host "    pyenv-win-venv v$cli_version
 Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
 Usage: pyenv-win-venv <command> <args>
@@ -281,6 +280,16 @@ Function Remove-PyEnvVenvProfile() {
     Set-Content -Path  $Profile -Value $UpdatedProfile
 }
 
+Function DeactivatePyEnv() {
+    $env:PYENV_VENV_ACTIVE = ""
+    if ($subcommand1 -eq "ps1") {
+        deactivate
+    }
+    else {
+        cmd /k "$env:VIRTUAL_ENV\Scripts\deactivate.bat"
+    }
+}
+
 # Help functions
 Function HelpInit() {
     Write-Host "Usage: pyenv-venv init <command>
@@ -290,7 +299,7 @@ current directory and activate the env
 
 Commands:
 root    search for .python-version file by traversing from
-        the current working directory to the root
+the current working directory to the root
     
 Example: `pyenv-venv init root`
 "
