@@ -205,28 +205,28 @@ function  main {
 
 
 function HelpMenu {
-    Write-Host "    pyenv-win-venv v$cli_version
-            Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
+    Write-Host "pyenv-win-venv v$cli_version
+Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
-            Usage: pyenv-win-venv <command> <args>
+Usage: pyenv-win-venv <command> <args>
 
-            A CLI to manage virtual envs with pyenv-win
+A CLI to manage virtual envs with pyenv-win
 
-            Commands:
-            init                search for .python-version file in the 
-            current directory and activate the env
-            activate            activate an env
-            deactivate          deactivate an env
-            install             install an env
-            uninstall           uninstall an env
-            uninstall self      uninstall the CLI and its envs
-            list <command>      list all installed envs/python versions
-            local               set the given env in .python-version file
-            config              show the app directory
-            update self         update the CLI to the latest version
-            which <command>     show the full path to an executable
-            help <command>      show the CLI/<command> menu
-            "
+Commands:
+init                search for .python-version file in the 
+                    current directory and activate the env
+activate            activate an env
+deactivate          deactivate an env
+install             install an env
+uninstall           uninstall an env
+uninstall self      uninstall the CLI and its envs
+list <command>      list all installed envs/python versions
+local               set the given env in .python-version file
+config              show the app directory
+update self         update the CLI to the latest version
+which <command>     show the full path to an executable
+help <command>      show the CLI/<command> menu
+"
 }
 
 
@@ -269,9 +269,9 @@ function MakeDirRecursive($dir) {
 }
 
 Function Remove-PyEnvVenvVars() {
-    $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split "; "
+    $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
     $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }
-    $NewPath = $NewPathParts -Join "; "
+    $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 }
 
@@ -285,66 +285,66 @@ Function Remove-PyEnvVenvProfile() {
 Function HelpInit() {
     Write-Host "Usage: pyenv-venv init <command>
 
-            Search for .python-version file in the 
-            current directory and activate the env
+Search for .python-version file in the 
+current directory and activate the env
 
-            Commands:
-            root    search for .python-version file by traversing from
-            the current working directory to the root
+Commands:
+root    search for .python-version file by traversing from
+        the current working directory to the root
     
-            Example: `pyenv-venv init root`
-            "
+Example: `pyenv-venv init root`
+"
 }
 Function HelpActivate() {
     Write-Host "Usage: pyenv-venv activate <env_name>
 
-            Parameters:
-            env_name    name of the installed virtualenv
+Parameters:
+env_name    name of the installed virtualenv
 
-            Example: `pyenv-venv activate test_env`
-            "
+Example: `pyenv-venv activate test_env`
+"
 }
 Function HelpInstall() {
     Write-Host "Usage: pyenv-venv install <python_ver> <env_name>
 
-            Parameters:
-            envs        list all installed envs
-            python      list all installed python versions
+Parameters:
+envs        list all installed envs
+python      list all installed python versions
 
-            Example: `pyenv-venv install 3.8.5 test_env`
-            "
+Example: `pyenv-venv install 3.8.5 test_env`
+"
 }
 Function HelpUninstall() {
     Write-Host "Usage: pyenv-venv uninstall <env_name>
 
-            Parameters:
-            env_name    name of the env
-            self        uninstall the CLI itself
+Parameters:
+env_name    name of the env
+self        uninstall the CLI itself
 
-            Example: `pyenv-venv uninstall test_env`
-            "
+Example: `pyenv-venv uninstall test_env`
+"
 }
 Function HelpList() {
     Write-Host "Usage: pyenv-venv list <command>
 
-            Commands:
-            envs        list all installed envs
-            python      list all installed python versions
+Commands:
+envs        list all installed envs
+python      list all installed python versions
 
-            Example: `pyenv-venv list envs`
-            "
+Example: `pyenv-venv list envs`
+"
 }
 
 Function HelpWhich() {
     Write-Host "Usage: pyenv-venv which <exec_name>
 
-            Shows the full path of the executable selected. 
+Shows the full path of the executable selected. 
 
-            Parameters:
-            exec_name   name of the executable
+Parameters:
+exec_name   name of the executable
 
-            Example: `pyenv-venv which python`
-            "
+Example: `pyenv-venv which python`
+"
 }
 
 main
