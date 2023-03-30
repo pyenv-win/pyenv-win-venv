@@ -89,15 +89,26 @@ function  main {
         elseif (test-path -PathType container "$pyenv_versions_dir\$subcommand3") {
             if ($subcommand4 -ne "self") {
                 if (!(test-path -PathType container "$app_env_dir\$subcommand4")) {
-                    Write-Host "Installing env: $subcommand4 using Python v$subcommand3"
                     # Deactivate the active python env if any
                     if ($env:VIRTUAL_ENV) {
                         $PYENV_VENV_ACTIVE = $env:PYENV_VENV_ACTIVE # Copy the active python venv
                         deactivate
                     }
                     pyenv shell $subcommand3
-                    python -m venv "$app_env_dir\$subcommand4"
 
+                    # Get active python version, split it to get Major.Patch, conver to float
+                    $pythonVersionString = python -c "import platform;print(platform.python_version())"
+                    $pythonVersionArrray = $pythonVersionString.Split(".")
+                    $pythonVersionStringFloat = $pythonVersionArrray[0] + "." + $pythonVersionArrray[1]
+                    $pythonVersionFloat = [decimal]$pythonVersionStringFloat
+
+                    Write-Host "Installing env: $subcommand4 using Python v$pythonVersionString"
+                    if ($pythonVersionFloat -lt 3.3) {
+                        python -W ignore:DEPRECATION -m pip --disable-pip-version-check install --quiet virtualenv
+                        python -m virtualenv --quiet "$app_env_dir\$subcommand4"
+                    } else {
+                        python -m venv "$app_env_dir\$subcommand4"
+                    }
                     # Reactivate the python env if any
                     if ($PYENV_VENV_ACTIVE) {
                         pyenv-venv activate $PYENV_VENV_ACTIVE 
