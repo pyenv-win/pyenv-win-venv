@@ -77,7 +77,10 @@ function  main {
         }
     }
     elseif ($subcommand2 -eq "deactivate") {
-        DeactivatePyEnv
+        if ($env:VIRTUAL_ENV) {
+            $env:PYENV_VENV_ACTIVE = ""
+            deactivate
+        }
     }
     elseif ($subcommand2 -eq "install") {
         if (!$subcommand3 -Or !$subcommand4) {
@@ -204,7 +207,7 @@ function  main {
 
 
 function HelpMenu {
-    Write-Host "    pyenv-win-venv v$cli_version
+    Write-Host "pyenv-win-venv v$cli_version
 Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
 Usage: pyenv-win-venv <command> <args>
@@ -278,16 +281,6 @@ Function Remove-PyEnvVenvProfile() {
     $CurrentProfile = Get-Content $Profile
     $UpdatedProfile = $CurrentProfile.Replace("pyenv-venv init", "")
     Set-Content -Path  $Profile -Value $UpdatedProfile
-}
-
-Function DeactivatePyEnv() {
-    $env:PYENV_VENV_ACTIVE = ""
-    if ($subcommand1 -eq "ps1") {
-        deactivate
-    }
-    else {
-        cmd /k "$env:VIRTUAL_ENV\Scripts\deactivate.bat"
-    }
 }
 
 # Help functions
