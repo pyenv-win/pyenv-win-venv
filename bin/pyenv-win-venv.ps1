@@ -12,27 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Param($subcommand1, $subcommand2, $subcommand3)
+Param($subcommand1, $subcommand2, $subcommand3, $subcommand4)
 $app_dir = "$HOME\.pyenv-win-venv"
 $app_env_dir = "$app_dir\envs"
 $cli_version = Get-Content "$app_dir\.version"
 
 $pyenv_versions_dir = "$env:PYENV_HOME\versions"
 $python_version_file = "$((Get-Location).Path)\.python-version"
-
 function  main {
     AppDirInit # Initialize the app directories
 
-    if ($subcommand1 -eq "init") {
+    if ($subcommand2 -eq "init") {
         # search for .python-version file in the current directory and move up a
         # directory towards the root till a .python-version file is found then activate the env
-        if ($subcommand2 -eq "root") {
+        if ($subcommand3 -eq "root") {
             $cwd = $((Get-Location).Path)
             while ($cwd.length -ne 0) {
                 if (test-path "$cwd\.python-version") {
                     $env_name = (Get-Content "$cwd\.python-version")
                     if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
-                        &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                        if ($subcommand1 -eq "ps1") {
+                            &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                        }
+                        else {
+                            cmd /k "$app_env_dir\$env_name\Scripts\activate.bat"
+                        }
                     }
                     exit
                 }
@@ -44,39 +48,51 @@ function  main {
             if (test-path $python_version_file) {
                 $env_name = (Get-Content $python_version_file)
                 if ($env_name -And (test-path -PathType container "$app_env_dir\$env_name")) {
-                    &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                    if ($subcommand1 -eq "ps1") {
+                        &"$app_env_dir\$env_name\Scripts\Activate.ps1" 
+                    }
+                    else {
+                        cmd /k "$app_env_dir\$env_name\Scripts\activate.bat"
+                    } 
                 }
             }
         }
     }
-    elseif ($subcommand1 -eq "activate") {
-        if (!$subcommand2) {
+    elseif ($subcommand2 -eq "activate") {
+        if (!$subcommand3) {
             HelpActivate
         }
-        elseif (test-path -PathType container "$app_env_dir\$subcommand2") {
-            &"$app_env_dir\$subcommand2\Scripts\Activate.ps1"
+        elseif (test-path -PathType container "$app_env_dir\$subcommand3") {
+            if ($subcommand1 -eq "ps1") {
+                &"$app_env_dir\$subcommand3\Scripts\Activate.ps1" 
+            }
+            else {
+                cmd /k "$app_env_dir\$subcommand3\Scripts\activate.bat"
+            }
             
         }
         else {
-            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
+            Write-Host "Env: $subcommand3 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand3"`"
         }
     }
-    elseif ($subcommand1 -eq "deactivate") {
-        deactivate
+    elseif ($subcommand2 -eq "deactivate") {
+        if ($env:VIRTUAL_ENV) {
+            deactivate
+        }
     }
-    elseif ($subcommand1 -eq "install") {
-        if (!$subcommand2 -Or !$subcommand3) {
+    elseif ($subcommand2 -eq "install") {
+        if (!$subcommand3 -Or !$subcommand4) {
             HelpInstall
         }
-        elseif (test-path -PathType container "$pyenv_versions_dir\$subcommand2") {
-            if ($subcommand3 -ne "self") {
-                if (!(test-path -PathType container "$app_env_dir\$subcommand3")) {
-                    Write-Host "Installing env: $subcommand3 using Python v$subcommand2"
-                    pyenv shell $subcommand2
-                    python -m venv "$app_env_dir\$subcommand3"
+        elseif (test-path -PathType container "$pyenv_versions_dir\$subcommand3") {
+            if ($subcommand4 -ne "self") {
+                if (!(test-path -PathType container "$app_env_dir\$subcommand4")) {
+                    Write-Host "Installing env: $subcommand4 using Python v$subcommand3"
+                    pyenv shell $subcommand3
+                    python -m venv "$app_env_dir\$subcommand4"
                 }
                 else {
-                    Write-Host "`"$subcommand3`" already exists. Please choose another name for the env."
+                    Write-Host "`"$subcommand4`" already exists. Please choose another name for the env."
                 }
             }
             else {
@@ -84,13 +100,13 @@ function  main {
             }
         }
         else {
-            Write-Host "Python v$subcommand2 is not installed. Install using `"pyenv install $subcommand2"`"
+            Write-Host "Python v$subcommand3 is not installed. Install using `"pyenv install $subcommand3"`"
         }
 
     }
-    elseif ($subcommand1 -eq "uninstall") {
-        if (!$subcommand2) { HelpUninstall }
-        elseif ($subcommand2 -eq "self") {
+    elseif ($subcommand2 -eq "uninstall") {
+        if (!$subcommand3) { HelpUninstall }
+        elseif ($subcommand3 -eq "self") {
             $title = 'Uninstall pyenv-venv and all the installed envs!'
             $question = 'Are you sure you want to proceed?'
             $choices = '&Yes', '&No'
@@ -100,37 +116,37 @@ function  main {
                 Remove-PyEnvWinVenv
             }
         }
-        elseif (test-path -PathType container "$app_env_dir\$subcommand2") {
-            Write-Host "Uninstalling env: $subcommand2"
-            Remove-Item -Recurse -Force "$app_env_dir\$subcommand2" 
+        elseif (test-path -PathType container "$app_env_dir\$subcommand3") {
+            Write-Host "Uninstalling env: $subcommand3"
+            Remove-Item -Recurse -Force "$app_env_dir\$subcommand3" 
         }
         else {
-            Write-Host "$subcommand2 is not installed so it cannot be uninstalled"
+            Write-Host "$subcommand3 is not installed so it cannot be uninstalled"
         }
 
     }
-    elseif ($subcommand1 -eq "list") {
-        if (!$subcommand2) { HelpList }
-        elseif ($subcommand2 -eq "envs") { FetchEnvs }
-        elseif ($subcommand2 -eq "python") { FetchPythonVersions }
+    elseif ($subcommand2 -eq "list") {
+        if (!$subcommand3) { HelpList }
+        elseif ($subcommand3 -eq "envs") { FetchEnvs }
+        elseif ($subcommand3 -eq "python") { FetchPythonVersions }
     }
-    elseif ($subcommand1 -eq "config") {
+    elseif ($subcommand2 -eq "config") {
         ConfigInfo
     }
-    elseif ($subcommand1 -eq "local") {
-        if (test-path -PathType container "$app_env_dir\$subcommand2") {
-            Set-Content -Path $python_version_file -Value $subcommand2
+    elseif ($subcommand2 -eq "local") {
+        if (test-path -PathType container "$app_env_dir\$subcommand3") {
+            Set-Content -Path $python_version_file -Value $subcommand3
         }
         else {
-            Write-Host "Env: $subcommand2 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand2"`"
+            Write-Host "Env: $subcommand3 is not installed. Install using `"pyenv-win-venv install <python_version> $subcommand3"`"
         }
     }
-    elseif ($subcommand1 -eq "config") {
+    elseif ($subcommand2 -eq "config") {
         ConfigInfo
     }
-    elseif ($subcommand1 -eq "update" -And $subcommand2 -eq "self") {
+    elseif ($subcommand2 -eq "update" -And $subcommand3 -eq "self") {
         # check if the CLI was installed using Git
-        (git -C $app_dir rev-parse) *> $null
+        (git -C $app_dir rev-parse) | out-null
         if ($LastExitCode -eq 0) {
             (git -C  $app_dir fetch origin) | out-null
             Write-Host "Changelog:" -ForegroundColor Blue
@@ -145,39 +161,39 @@ function  main {
         }
 
     }
-    elseif ($subcommand1 -eq "which") {
+    elseif ($subcommand2 -eq "which") {
         
-        if (!$subcommand2) {
+        if (!$subcommand3) {
             HelpWhich
         }
-        elseif (Test-Path "$env:VIRTUAL_ENV/Scripts/$subcommand2.exe") {
-            Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand2.exe"
+        elseif (Test-Path "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe") {
+            Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe"
         }
         else {
-            pyenv which $subcommand2
+            pyenv which $subcommand3
         }
     }
-    elseif ($subcommand1 -eq "help" -Or !$subcommand1) {
-        if (!$subcommand2) {
+    elseif ($subcommand2 -eq "help" -Or !$subcommand2) {
+        if (!$subcommand3) {
             # Show the help menu if help command used or no commands are used
             HelpMenu
         }
-        elseif ($subcommand2 -eq "init") {
+        elseif ($subcommand3 -eq "init") {
             HelpInit
         }
-        elseif ($subcommand2 -eq "activate") {
+        elseif ($subcommand3 -eq "activate") {
             HelpActivate
         }
-        elseif ($subcommand2 -eq "install") {
+        elseif ($subcommand3 -eq "install") {
             HelpInstall
         }
-        elseif ($subcommand2 -eq "uninstall") {
+        elseif ($subcommand3 -eq "uninstall") {
             HelpUninstall
         }
-        elseif ($subcommand2 -eq "list") {
+        elseif ($subcommand3 -eq "list") {
             HelpList
         }
-        elseif ($subcommand2 -eq "which") {
+        elseif ($subcommand3 -eq "which") {
             HelpWhich
         }
     }
@@ -186,27 +202,27 @@ function  main {
 
 
 function HelpMenu {
-    Write-Host "    pyenv-win-venv v$cli_version
-    Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
+    Write-Host "pyenv-win-venv v$cli_version
+Copyright (c) Arbaaz Laskar <arzkar.dev@gmail.com>
 
-    Usage: pyenv-win-venv <command> <args>
+Usage: pyenv-win-venv <command> <args>
 
-    A CLI to manage virtual envs with pyenv-win
+A CLI to manage virtual envs with pyenv-win
 
-    Commands:
-    init                search for .python-version file in the 
-                        current directory and activate the env
-    activate            activate an env
-    deactivate          deactivate an env
-    install             install an env
-    uninstall           uninstall an env
-    uninstall self      uninstall the CLI and its envs
-    list <command>      list all installed envs/python versions
-    local               set the given env in .python-version file
-    config              show the app directory
-    update self         update the CLI to the latest version
-    which <command>     show the full path to an executable
-    help <command>      show the CLI/<command> menu
+Commands:
+init                search for .python-version file in the 
+                    current directory and activate the env
+activate            activate an env
+deactivate          deactivate an env
+install             install an env
+uninstall           uninstall an env
+uninstall self      uninstall the CLI and its envs
+list <command>      list all installed envs/python versions
+local               set the given env in .python-version file
+config              show the app directory
+update self         update the CLI to the latest version
+which <command>     show the full path to an executable
+help <command>      show the CLI/<command> menu
 "
 }
 
