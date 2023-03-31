@@ -90,11 +90,18 @@ function  main {
             if ($subcommand4 -ne "self") {
                 if (!(test-path -PathType container "$app_env_dir\$subcommand4")) {
                     Write-Host "Installing env: $subcommand4 using Python v$subcommand3"
-                    $PYENV_VENV_ACTIVE = $env:PYENV_VENV_ACTIVE # Copy the active python venv
-                    DeactivatePyEnv # Deactivate the active python env
+                    # Deactivate the active python env if any
+                    if ($env:VIRTUAL_ENV) {
+                        $PYENV_VENV_ACTIVE = $env:PYENV_VENV_ACTIVE # Copy the active python venv
+                        deactivate
+                    }
                     pyenv shell $subcommand3
                     python -m venv "$app_env_dir\$subcommand4"
-                    pyenv-venv activate $PYENV_VENV_ACTIVE # Reactivate the python env
+
+                    # Reactivate the python env if any
+                    if ($PYENV_VENV_ACTIVE) {
+                        pyenv-venv activate $PYENV_VENV_ACTIVE 
+                    }
                 }
                 else {
                     Write-Host "`"$subcommand4`" already exists. Please choose another name for the env."
