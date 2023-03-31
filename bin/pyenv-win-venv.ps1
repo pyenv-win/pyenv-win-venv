@@ -106,8 +106,8 @@ function  main {
                     if ([System.Version]"$pythonVersionFloat" -lt [System.Version]"3.3") {
                         if ([System.Version]"$pythonVersionFloat" -lt [System.Version]"2.7.9") {
                             # Install pip
-                            Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -o "$app_dir\get-pip.py"
-                            python "$app_dir\get-pip.py"
+                            Invoke-WebRequest https://bootstrap.pypa.io/ez_setup.py -o "$app_dir\ez_setup.py"
+                            easy_install pip
                         }
 
                         python -W ignore:DEPRECATION -m pip --disable-pip-version-check install --quiet virtualenv
