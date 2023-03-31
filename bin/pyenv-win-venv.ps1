@@ -101,12 +101,10 @@ function  main {
                     $pythonVersionString = python -c "import platform;print(platform.python_version())"
                     $pythonVersionArrray = $pythonVersionString.Split(".")
                     $pythonVersionStringFloat = $pythonVersionArrray[0] + "." + $pythonVersionArrray[1]
-                    $pythonVersionFloat = [decimal]$pythonVersionStringFloat
-                    
+                    $pythonVersionFloat = $pythonVersionStringFloat
 
-                    if ([decimal]$pythonVersionFloat -lt 3.3) {
-
-                        if ([decimal]$pythonVersionFloat -lt 2.7.9) {
+                    if ([System.Version]"$pythonVersionFloat" -lt [System.Version]"3.3") {
+                        if ([System.Version]"$pythonVersionFloat" -lt [System.Version]"2.7.9") {
                             # Install pip
                             Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -o "$app_dir\get-pip.py"
                             python "$app_dir\get-pip.py"
