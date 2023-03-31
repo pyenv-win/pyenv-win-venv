@@ -96,7 +96,28 @@ function  main {
                         deactivate
                     }
                     pyenv shell $subcommand3
-                    python -m venv "$app_env_dir\$subcommand4"
+
+                    # Get active python version, split it to get Major.Patch, conver to float
+                    $pythonVersionString = python -c "import platform;print(platform.python_version())"
+                    $pythonVersionArrray = $pythonVersionString.Split(".")
+                    $pythonVersionStringFloat = $pythonVersionArrray[0] + "." + $pythonVersionArrray[1]
+                    $pythonVersionFloat = [decimal]$pythonVersionStringFloat
+                    
+
+                    if ([decimal]$pythonVersionFloat -lt 3.3) {
+
+                        if ([decimal]$pythonVersionFloat -lt 2.7.9) {
+                            # Install pip
+                            Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -o "$app_dir\get-pip.py"
+                            python "$app_dir\get-pip.py"
+                        }
+
+                        python -W ignore:DEPRECATION -m pip --disable-pip-version-check install --quiet virtualenv
+                        python -m virtualenv --quiet "$app_env_dir\$subcommand4"
+                    }
+                    else {
+                        python -m venv "$app_env_dir\$subcommand4"
+                    }
 
                     # Reactivate the python env if any
                     if ($PYENV_VENV_ACTIVE) {
