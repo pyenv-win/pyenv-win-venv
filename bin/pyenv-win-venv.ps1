@@ -76,11 +76,8 @@ function  main {
         }
     }
     elseif ($subcommand2 -eq "deactivate") {
-        if ($subcommand1 -eq "ps1") {
+        if ($env:VIRTUAL_ENV) {
             deactivate
-        }
-        else {
-            cmd /k "$env:VIRTUAL_ENV\Scripts\deactivate.bat"
         }
     }
     elseif ($subcommand2 -eq "install") {
