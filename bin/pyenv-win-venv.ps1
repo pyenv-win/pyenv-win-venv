@@ -64,6 +64,7 @@ function  main {
         }
         elseif (test-path -PathType container "$app_env_dir\$subcommand3") {
             if ($subcommand1 -eq "ps1") {
+                $env:PYENV_VENV_ACTIVE = $subcommand3
                 &"$app_env_dir\$subcommand3\Scripts\Activate.ps1" 
             }
             else {
@@ -77,6 +78,7 @@ function  main {
     }
     elseif ($subcommand2 -eq "deactivate") {
         if ($env:VIRTUAL_ENV) {
+            $env:PYENV_VENV_ACTIVE = ""
             deactivate
         }
     }
@@ -88,8 +90,18 @@ function  main {
             if ($subcommand4 -ne "self") {
                 if (!(test-path -PathType container "$app_env_dir\$subcommand4")) {
                     Write-Host "Installing env: $subcommand4 using Python v$subcommand3"
+                    # Deactivate the active python env if any
+                    if ($env:VIRTUAL_ENV) {
+                        $PYENV_VENV_ACTIVE = $env:PYENV_VENV_ACTIVE # Copy the active python venv
+                        deactivate
+                    }
                     pyenv shell $subcommand3
                     python -m venv "$app_env_dir\$subcommand4"
+
+                    # Reactivate the python env if any
+                    if ($PYENV_VENV_ACTIVE) {
+                        pyenv-venv activate $PYENV_VENV_ACTIVE 
+                    }
                 }
                 else {
                     Write-Host "`"$subcommand4`" already exists. Please choose another name for the env."
@@ -166,8 +178,8 @@ function  main {
         if (!$subcommand3) {
             HelpWhich
         }
-        elseif (Test-Path "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe") {
-            Write-Host "$env:VIRTUAL_ENV/Scripts/$subcommand3.exe"
+        elseif (Test-Path "$env:VIRTUAL_ENV\Scripts\$subcommand3.exe") {
+            Write-Host "$env:VIRTUAL_ENV\Scripts\$subcommand3.exe"
         }
         else {
             pyenv which $subcommand3
@@ -287,7 +299,7 @@ current directory and activate the env
 
 Commands:
 root    search for .python-version file by traversing from
-        the current working directory to the root
+the current working directory to the root
     
 Example: `pyenv-venv init root`
 "
