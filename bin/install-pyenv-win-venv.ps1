@@ -71,10 +71,11 @@ Function Get-LatestVersion() {
 
     Remove-Item -Path $LatestVersionFilePath -Force
 
-    Return $LatestVersion
+    Return $LatestVersion.Trim()
 }
 
 Function Main() {
+    Remove-Item "$HOME\install-pyenv-win-venv.ps1"
     If ($Uninstall) {
         Remove-PyEnvWinVenv
         If ($LastExitCode -eq 0) {
@@ -92,24 +93,30 @@ Function Main() {
     If ($CurrentVersion) {
         Write-Host "pyenv-win-venv $CurrentVersion installed."
         $LatestVersion = Get-LatestVersion
-        If ($CurrentVersion -eq $LatestVersion) {
-            Write-Host "No updates available."
+        If ($LatestVersion) {
+            If ($CurrentVersion -eq $LatestVersion) {
+                Write-Host "No updates available."
+                exit
+            }
+            Else {
+                Write-Host "New version available: $LatestVersion. Updating..."
+            
+                Write-Host "Backing up existing envs to $BackupDir"
+                $FoldersToBackup = "envs"
+                ForEach ($Dir in $FoldersToBackup) {
+                    If (-not (Test-Path $BackupDir)) {
+                        (New-Item -ItemType Directory -Path $BackupDir)  *> $null
+                    }
+                    Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force -Recurse
+                }
+                Write-Host "Removing $PyEnvWinVenvDir"
+                Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
+            }
+        }
+        else {
+            Write-Host "No updates available!"
             exit
         }
-        Else {
-            Write-Host "New version available: $LatestVersion. Updating..."
-            
-            Write-Host "Backing up existing envs to $BackupDir"
-            $FoldersToBackup = "envs"
-            ForEach ($Dir in $FoldersToBackup) {
-                If (-not (Test-Path $BackupDir)) {
-                    (New-Item -ItemType Directory -Path $BackupDir) | out-null
-                }
-                Copy-Item -Path "${PyEnvWinVenvDir}\${Dir}" -Destination $BackupDir -Force -Recurse
-            }
-            Write-Host "Removing $PyEnvWinVenvDir"
-            Remove-Item -Path $PyEnvWinVenvDir -Recurse -Force
-        }   
     }
     else {
         # First installation,
@@ -117,7 +124,7 @@ Function Main() {
         [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
     }
 
-    (New-Item -Path $PyEnvWinVenvDir -ItemType Directory) | out-null
+    (New-Item -Path $PyEnvWinVenvDir -ItemType Directory)  *> $null
 
     $DownloadPath = "$PyEnvWinVenvDir\pyenv-win-venv.zip"
 
