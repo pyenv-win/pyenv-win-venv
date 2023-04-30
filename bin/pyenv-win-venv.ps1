@@ -163,9 +163,9 @@ function  main {
     }
     elseif ($subcommand2 -eq "update" -And $subcommand3 -eq "self") {
         # check if the CLI was installed using Git
-        (git -C $app_dir rev-parse) | out-null
+        (git -C $app_dir rev-parse) *> $null
         if ($LastExitCode -eq 0) {
-            (git -C  $app_dir fetch origin) | out-null
+            (git -C  $app_dir fetch origin) *> $null
             Write-Host "Changelog:" -ForegroundColor Blue
             git -C $app_dir log ..origin/main --pretty=format:"%Cblue* %C(auto)%h: %Cgreen%s%n%b"
             git -C $app_dir pull origin
@@ -278,7 +278,7 @@ Function Remove-PyEnvWinVenv() {
 # Helper functions
 function MakeDirRecursive($dir) {
     if (!(test-path -PathType container $dir)) {
-        (New-Item -ItemType Directory -Path $dir) | out-null
+        (New-Item -ItemType Directory -Path $dir) *> $null
     }
 }
 
