@@ -79,7 +79,12 @@ function  main {
     elseif ($subcommand2 -eq "deactivate") {
         if ($env:VIRTUAL_ENV) {
             $env:PYENV_VENV_ACTIVE = ""
-            deactivate
+            if ($subcommand1 -eq "ps1") {
+                deactivate
+            }
+            else {
+                cmd /k deactivate
+            }
         }
     }
     elseif ($subcommand2 -eq "install") {
