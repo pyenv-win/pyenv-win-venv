@@ -92,6 +92,9 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
     update self         update the CLI to the latest version
     which <command>     show the full path to an executable
     help <command>      show the CLI/<command> menu
+
+    Flags:
+    debug               To show debug log
 ```
 
 **Note:** `pyenv-venv` is an alias for `pyenv-win-venv` so either one can be used to call the CLI.
