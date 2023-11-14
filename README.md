@@ -1,7 +1,8 @@
 <h1 align="center">pyenv-win-venv</h1>
 
-A CLI to manage virtual envs with pyenv-win<br>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/arzkar)
 
+A CLI to manage virtual envs with pyenv-win<br>
 To report issues for the CLI, open an issue at https://github.com/pyenv-win/pyenv-win-venv/issues
 
 # Installation
