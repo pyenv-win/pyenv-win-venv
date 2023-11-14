@@ -360,8 +360,8 @@ Function HelpInstall() {
     Write-Host "Usage: pyenv-venv install <python_ver> <env_name>
 
 Parameters:
-envs        list all installed envs
-python      list all installed python versions
+python_ver    name of the installed python version
+env_name      name of the installed virtualenv
 
 Example: `pyenv-venv install 3.8.5 test_env`
 "
@@ -370,7 +370,7 @@ Function HelpUninstall() {
     Write-Host "Usage: pyenv-venv uninstall <env_name>
 
 Parameters:
-env_name    name of the env
+env_name    name of the installed virtualenv
 self        uninstall the CLI itself
 
 Example: `pyenv-venv uninstall test_env`
