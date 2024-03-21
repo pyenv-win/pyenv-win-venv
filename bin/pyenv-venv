@@ -1,3 +1,2 @@
 #!/bin/sh
-
-MSYS2_ARG_CONV_EXCL="/C" exec cmd /C call "$(cygpath -wa "$(dirname "$0")")/pyenv-venv.bat" "$@"; # sould work on both cygwin and git-bash/mingw
+MSYS2_ARG_CONV_EXCL="/C" exec cmd /C call "$(cygpath -wa "$(dirname "$0")")/pyenv-venv.bat" "$@"; # should work on both cygwin and git-bash/mingw
