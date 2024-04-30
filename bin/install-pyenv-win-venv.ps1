@@ -139,7 +139,7 @@ Function Main() {
         Copy-Item -Path "$BackupDir\*" -Destination $PyEnvWinVenvDir -Force -Recurse
     }
     
-    If ($LastExitCode -eq 0) {
+    If ($LastExitCode -eq $null -or $LastExitCode -eq 0) {
         Write-Host "pyenv-win-venv is successfully installed. You may need to close and reopen your terminal before using it."
     }
     Else {
