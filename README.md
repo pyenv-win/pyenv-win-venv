@@ -49,8 +49,7 @@ Go to `%USERPROFILE%\.pyenv-win-venv` (which is your installed path) and run `gi
 ## Power Shell (If the CLI was installed using the PowerScript Installation Script)
 
 ```
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
-&"$HOME\install-pyenv-win-venv.ps1"
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1"; &"$HOME\install-pyenv-win-venv.ps1"
 ```
 
 # Uninstallation
