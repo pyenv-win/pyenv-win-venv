@@ -2,6 +2,8 @@
 # This script is based on https://github.com/Moeologist/scoop-completion
 
 # powershell completion for pyenv-win-venv
+
+###-start-pyenv-venv-completion-###
 $script:PyenvVenvCommands = @(
     'activate',
     'deactivate',
@@ -84,6 +86,6 @@ $scriptBlock = {
     PyenvVenvTabExpansion $rest
 }
 
-@('pyenv-venv', 'pyenv-win-venv') | ForEach-Object {
-    Register-ArgumentCompleter -Native -CommandName $_ -ScriptBlock $scriptBlock
-}
+Register-ArgumentCompleter -Native -CommandName @('pyenv-venv', 'pyenv-win-venv') -ScriptBlock $scriptBlock
+
+###-end-pyenv-venv-completion-###
