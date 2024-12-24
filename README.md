@@ -36,8 +36,7 @@ Adding the following paths to your USER PATH variable in order to access the pye
 [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;"  + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
-> [!NOTES] <br/>
-> If you use another path other than `$HOME`, then add the project's `bin` folder to your corresponding USER PATH variable. <br/>
+- **NOTES**: If you use another path other than `$HOME`, then add the project's `bin` folder to your corresponding USER PATH variable.
 
 - For example, your `pyenv-win-venv` folder located in `D:\Applications\pyenv-win-venv`
 
