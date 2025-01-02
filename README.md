@@ -13,7 +13,7 @@ This script depends on the [pyenv-win](https://github.com/pyenv-win/pyenv-win) s
 
 ## Power Shell
 
-```
+```pwsh
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
 &"$HOME\install-pyenv-win-venv.ps1"
 ```
@@ -22,7 +22,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
 
 ## Git
 
-```
+```pwsh
 git clone https://github.com/pyenv-win/pyenv-win-venv "$HOME\.pyenv-win-venv"
 ```
 
@@ -36,6 +36,14 @@ Adding the following paths to your USER PATH variable in order to access the pye
 [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;"  + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
 ```
 
+- **NOTES**: If you use another path other than `$HOME`, then add the project's `bin` folder to your corresponding USER PATH variable.
+
+- For example, your `pyenv-win-venv` folder located in `D:\Applications\pyenv-win-venv`
+
+  ```pwsh
+  [System.Environment]::SetEnvironmentVariable('path', "D:\Applications\pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
+  ```
+
 # Update
 
 Automatically using `pyenv-venv update self` (Recommended)
@@ -48,7 +56,7 @@ Go to `%USERPROFILE%\.pyenv-win-venv` (which is your installed path) and run `gi
 
 ## Power Shell (If the CLI was installed using the PowerScript Installation Script)
 
-```
+```pwsh
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1"; &"$HOME\install-pyenv-win-venv.ps1"
 ```
 
@@ -62,7 +70,7 @@ pyenv-venv uninstall self
 
 ## Power Shell
 
-```
+```pwsh
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win-venv/main/bin/install-pyenv-win-venv.ps1" -OutFile "$HOME\install-pyenv-win-venv.ps1";
 &"$HOME\install-pyenv-win-venv.ps1" -Uninstall
 ```
@@ -83,12 +91,14 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv
                         current directory and activate the env
     activate            activate an env
     deactivate          deactivate an env
+    completion          autocomplete script for powershell
     install             install an env
     uninstall           uninstall an env
     uninstall self      uninstall the CLI and its envs
     list <command>      list all installed envs/python versions
     local               set the given env in .python-version file
     config              show the app directory
+
     update self         update the CLI to the latest version
     which <command>     show the full path to an executable
     help <command>      show the CLI/<command> menu
@@ -167,6 +177,37 @@ pyenv-venv which <exec_name>
 pyenv-venv help install
 ```
 
+## PowerShell Completion
+
+- To load completion code into current shell:
+
+```pwsh
+pyenv-venv completion | Out-String | Invoke-Expression
+```
+
+- To add completion code directly to the `$PROFILE`
+
+```pwsh
+pyenv-venv completion >> $PROFILE
+```
+
+- One-time execution of `pyenv-venv` completion code to the `$PROFILE`
+
+```pwsh
+Add-Content $PROFILE "if (Get-Command pyenv-venv -ErrorAction SilentlyContinue) {
+    pyenv-venv completion | Out-String | Invoke-Expression
+}"
+```
+
+- You can also save the completion script and execute it in the `$PROFILE`, for example:
+
+```pwsh
+# Create completion script
+pyenv-venv completion > "$HOME\pyenv-venv-completion.ps1"
+# Add to the `$PROFILE`
+Add-Content $PROFILE "$HOME\pyenv-venv-completion.ps1"
+```
+
 # Note
 
 ## Env automatic activation using `.python-version` file
@@ -184,7 +225,7 @@ pyenv-venv help install
 
   - First check if you already have a powershell profile.
 
-    ```
+    ```pwsh
     Test-Path $profile
     ```
 
@@ -192,7 +233,7 @@ pyenv-venv help install
 
   - Create a new profile using:
 
-    ```
+    ```pwsh
     New-Item -path $profile -type file –force
     ```
 

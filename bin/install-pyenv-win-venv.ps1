@@ -1,3 +1,4 @@
+# cSpell: disable
 <#
     .SYNOPSIS
     Installs pyenv-win-venv
@@ -25,8 +26,15 @@
 param (
     [Switch] $Uninstall = $False
 )
-    
-$PyEnvWinVenvDir = "${env:USERPROFILE}\.pyenv-win-venv"
+
+$chooseLocation = $(Write-Host "Install 'pyenv-win-venv' to default (y) or custom (n) location?" -NoNewLine; Read-Host)
+if ($chooseLocation.ToUpper() -eq 'Y') {
+    $PyEnvWinVenvDir = "${env:USERPROFILE}\.pyenv-win-venv"
+}
+else {
+    $PyEnvWinVenvDir = Read-Host "Input your desired location for pyenv-win-venv installation"
+}
+
 $BinPath = "${PyEnvWinVenvDir}\bin"
     
 Function Remove-PyEnvVenvVars() {
@@ -75,7 +83,7 @@ Function Get-LatestVersion() {
 }
 
 Function Main() {
-    Remove-Item "$HOME\install-pyenv-win-venv.ps1"
+    Remove-Item "$HOME\install-pyenv-win-venv.ps1" -ErrorAction SilentlyContinue
     If ($Uninstall) {
         Remove-PyEnvWinVenv
         If ($LastExitCode -eq 0) {
@@ -121,7 +129,7 @@ Function Main() {
     else {
         # First installation,
         # Add the \bin path to the User's Environment Variables
-        [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv-win-venv\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
+        [System.Environment]::SetEnvironmentVariable('path', "$PyEnvWinVenvDir\bin;" + [System.Environment]::GetEnvironmentVariable('path', "User"), "User")
     }
 
     (New-Item -Path $PyEnvWinVenvDir -ItemType Directory)  *> $null

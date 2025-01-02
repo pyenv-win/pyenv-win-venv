@@ -22,11 +22,12 @@ Param(
 # Auto-detect the shell
 if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript") {
     $invokedShell = "bat"
-} else {
+}
+else {
     $invokedShell = "ps1"
 }
 
-$app_dir = "$HOME\.pyenv-win-venv"
+$app_dir = Resolve-Path "$PSScriptRoot" | Split-Path
 $app_env_dir = "$app_dir\envs"
 $cli_version = Get-Content "$app_dir\.version"
 
@@ -222,6 +223,9 @@ function  main {
             pyenv which $subcommand2
         }
     }
+    elseif ($subcommand1 -eq 'completion') {
+        Get-Content "$app_dir\completions\pyenv-win-venv.ps1"
+    }
     elseif ($subcommand1 -eq "help" -Or !$subcommand1) {
         if (!$subcommand2) {
             # Show the help menu if help command used or no commands are used
@@ -232,6 +236,9 @@ function  main {
         }
         elseif ($subcommand2 -eq "activate") {
             HelpActivate
+        }
+        elseif ($subcommand2 -eq "completion") {
+            HelpCompletion
         }
         elseif ($subcommand2 -eq "install") {
             HelpInstall
@@ -247,7 +254,8 @@ function  main {
         }
     }
     else { 
-        Write-Host "Command is not valid. Run `"pyenv-win-venv help`" for the HelpMenu" }
+        Write-Host "Command is not valid. Run `"pyenv-win-venv help`" for the HelpMenu" 
+    }
 }
 
 
@@ -264,6 +272,7 @@ init                search for .python-version file in the
                     current directory and activate the env
 activate            activate an env
 deactivate          deactivate an env
+completion          autocomplete script for powershell
 install             install an env
 uninstall           uninstall an env
 uninstall self      uninstall the CLI and its envs
@@ -328,7 +337,7 @@ Function Remove-PyEnvVenvVars() {
 Function Remove-PyEnvVenvProfile() {
     $CurrentProfile = Get-Content $Profile
     $UpdatedProfile = $CurrentProfile.Replace("pyenv-venv init", "")
-    Set-Content -Path  $Profile -Value $UpdatedProfile
+    Set-Content -Path $Profile -Value $UpdatedProfile
 }
 
 # Function to write debug log
@@ -405,6 +414,28 @@ exec_name   name of the executable
 
 Example: `pyenv-venv which python`
 "
+}
+
+Function HelpCompletion() {
+    Write-Host 'Usage: pyenv-venv completion
+
+Generate autocompletion script for powershell.
+
+- Load completion code into current shell:
+pyenv-venv completion | Out-String | Invoke-Expression
+
+- Add completion code directly to $PROFILE:
+pyenv-venv completion >> $PROFILE
+
+- Execute completion code in the $PROFILE:
+Add-Content $PROFILE "if (Get-Command pyenv-venv -ErrorAction SilentlyContinue) {
+    pyenv-venv completion | Out-String | Invoke-Expression
+}"
+
+- Save completion script and execute in the $PROFILE:
+pyenv-venv completion > "$HOME\pyenv-venv-completion.ps1"
+Add-Content $PROFILE "$HOME\pyenv-venv-completion.ps1"
+'
 }
 
 main
