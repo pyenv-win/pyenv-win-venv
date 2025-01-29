@@ -14,18 +14,20 @@
 
 Param(
     [switch]$debug,
+    [switch]$CalledFromCMD,
     $subcommand1, 
     $subcommand2, 
     $subcommand3
 )
 
-# Auto-detect the shell
-if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript") {
+# Detect the shell via input parameter
+if ($CalledFromCMD) {
     $invokedShell = "bat"
 }
 else {
     $invokedShell = "ps1"
 }
+Write-Debug-Log "Detected Shell: $invokedShell"
 
 $app_dir = Resolve-Path "$PSScriptRoot" | Split-Path
 $app_env_dir = "$app_dir\envs"
